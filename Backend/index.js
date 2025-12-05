@@ -3,6 +3,7 @@ import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import dotenv from 'dotenv';
 import connectdb from './util/db.js';
+import router from './Routes/User.Routes.js';
 
 dotenv.config();
 
@@ -25,6 +26,8 @@ app.get('/', (_, res) => {
         success: true
     });
 });
+
+app.use("/api/auth", router);
 
 app.listen(PORT, () => {
     connectdb();  
