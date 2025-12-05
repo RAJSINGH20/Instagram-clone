@@ -1,65 +1,73 @@
 import mongoose from "mongoose";
 
-const userschema = new mongoose.Schema({
+const userSchema = new mongoose.Schema({
+
     username: {
         type: String,
         required: true,
-        unique: true
+        unique: true,
+        trim: true,
     },
+
     password: {
         type: String,
-        required: true
+        required: true,
     },
+
     email: {
         type: String,
         required: true,
-        unique: true
+        unique: true,
+        lowercase: true,
+        trim: true,
     },
+
     profilepic: {
         type: String,
-        default: ''
+        default: ""
     },
+
     bio: {
         type: String,
-        default: ''
+        default: ""
     },
-    gender:{
+
+    gender: {
         type: String,
-        // The enum field is correct for restricting values
-        enum: ['male', 'female', 'other'], 
-        default: ''
+        enum: ["male", "female", "other"],
+        default: "other"   // ✅ fixed
     },
-    // Followers should be an array of ObjectIds referencing other User documents
-    follower: [
+
+    followers: [
         {
-            type: mongoose.Schema.Types.ObjectId, // Corrected casing and path
-            ref: 'User'
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "User"
         }
     ],
-    // Following should be an array of ObjectIds referencing other User documents
+
     following: [
         {
-            type: mongoose.Schema.Types.ObjectId, // Corrected casing and path
-            ref: 'User'
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "User"
         }
     ],
-    // Posts should be an array of ObjectIds referencing Post documents
+
     posts: [
         {
-            type: mongoose.Schema.Types.ObjectId, // Corrected casing and path
-            ref: 'Post',
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Post"
         }
     ],
-    // Bookmarks should be an array of ObjectIds referencing Post documents
-    bookmark: [
+
+    bookmarks: [
         {
-            type: mongoose.Schema.Types.ObjectId, // Corrected casing and path
-            ref: 'Post',
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Post"
         }
     ]
 
-}, {timestamps: true}); // `timestamps: true` is correct for adding `createdAt` and `updatedAt`
+}, { timestamps: true });
 
-const User = mongoose.model('User', userschema);
+const User = mongoose.model("User", userSchema);
 
 export default User;
