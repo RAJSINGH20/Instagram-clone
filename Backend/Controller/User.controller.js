@@ -54,6 +54,7 @@ export const Login = async (req, res) => {
         if (!isPasswordValid) {
             return res.status(400).json({ message: "Invalid credentials", success: false });
         }
+<<<<<<< HEAD
 
         const token = jwt.sign(
             { id: userFound._id },
@@ -95,10 +96,41 @@ export const Login = async (req, res) => {
 export const Logout = async (req, res) => {
     try {
         res.clearCookie("token", { httpOnly: true, sameSite: "strict" }).json({ message: "Logout successful", success: true })  
+=======
+        const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: "1d" })
+
+
+        user = {
+            _id: user._id,
+            username: user.username,
+            email: user.email,
+            profilepic: user.profilepic,
+            bio: user.bio,
+            followers: user.followers,
+            following: user.following,
+            posts: user.posts
+        }
+
+        res.status(200).json({ message: "Login successful", success: true, user, token })
+        return res.cookie("token", token, { httpOnly: true , sameSite: "strict", maxAge: 1000 * 60 * 60 * 24 }).json({ message: "Login successful", success: true, user, token })
+
+
+>>>>>>> d58dd9199b78b3fbf642d0fb3b1ccdd77a9db123
     } catch (error) {
         res.status(500).json({ message: "Internal server error", success: false })
     }
 }
+<<<<<<< HEAD
+=======
+
+export const Logout = async (req, res) => {
+    try {
+        res.clearCookie("token", { httpOnly: true, sameSite: "strict" }).json({ message: "Logout successful", success: true })  
+    } catch (error) {
+        res.status(500).json({ message: "Internal server error", success: false })
+    }
+}
+>>>>>>> d58dd9199b78b3fbf642d0fb3b1ccdd77a9db123
 export const Getprofile = async (req, res) => {
     try {
         
