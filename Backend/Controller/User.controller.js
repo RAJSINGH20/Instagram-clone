@@ -135,8 +135,83 @@ export const editprofile = async (req, res) => {
         if (!user) {
             return res.status(404).json({ message: "User not found", success: false });
         }
+        if(bio){
+            user.bio = bio;
+        }
+        if(gender){
+            user.gender = gender
+        }
+        if(profilepic){
+            user.profilepic = cloudresposnce.secure_url;
+        }
+
+        await user.save();
+
+        return res.status(200).json({ message: "Profile updated successfully", success: true, user });
+
 
     }catch (error) {
+        console.log(error)
+        res.status(500).json({ message: "Internal server error", success: false })
+    }
+}
+
+
+export const getsuggestedUsers = async (req, res) => {
+
+    try {
+        const suggestedUser = await User.find({ _id: { $ne: req.id } }).select("-password");
+
+        if(!suggestedUser){
+            return res.status(404).json({ message: "Currently don't have any suggested users", success: false })
+        }
+
+        res.status(200).json({ users: suggestedUser, success: true })
+        
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({ message: "Internal server error", success: false })
+    }
+}
+
+
+export const followorunfollowuser = async (req, res) => {
+    try {
+        const followkarnewala = req.id
+        const jiskofollowkarunga = req.params.id;
+
+        if(followkarnewala === jiskofollowkarunga){
+            return res.status(400).json({ message: "You cannot follow yourself", success: false })
+        }
+
+        const user = await User.findById(followkarnewala);
+        const targetUser = await User.findById(jiskofollowkarunga);
+
+        if (!user || !targetUser) {
+            return res.status(404).json({ message: "User not found", success: false });
+        }
+
+        const isFollowing = user.following.includes(jiskofollowkarunga);
+
+        if (isFollowing) {
+            // Unfollow logic
+            await Promise.all([
+                user.following.push({_id:followkarnewala},{$pull:{following:jiskofollowkarunga}}),
+                targetUser.followers.push({_id:followkarnewala},{$pull:{followers:followkarnewala}})
+            ])
+            return res.status(200).json({ message: "Unfollowed successfully", success: true });
+        }else{
+            // Follow logic
+            await Promise.all([
+                user.following.push({_id:followkarnewala},{$push:{following:jiskofollowkarunga}}),
+                targetUser.followers.push({_id:followkarnewala},{$push:{followers:followkarnewala}})
+            ])
+            return res.status(200).json({ message: "Followed successfully", success: true });
+        }
+
+        
+
+    } catch (error) {
         console.log(error)
         res.status(500).json({ message: "Internal server error", success: false })
     }
