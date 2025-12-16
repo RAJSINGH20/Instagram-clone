@@ -3,7 +3,8 @@ import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import dotenv from 'dotenv';
 import connectdb from './util/db.js';
-import router from './Routes/User.Routes.js';
+import UserRoute from './Routes/User.Routes.js';
+import User from './model/user.model.js';
 
 dotenv.config();
 
@@ -27,7 +28,8 @@ app.get('/', (_, res) => {
     });
 });
 
-app.use("/api/auth", router);
+app.use("/api/v1/user", UserRoute);
+"http://localhost:8000/api/v1/user/signup"
 
 app.listen(PORT, () => {
     connectdb();  

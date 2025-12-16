@@ -1,4 +1,4 @@
-import { jwt } from "jsonwebtoken";
+import  jwt  from "jsonwebtoken";
 export const isAuth = async(req, res, next) => {
     try {
         const token = req.cookies.token || req.headers.authorization?.split(" ")[1];
