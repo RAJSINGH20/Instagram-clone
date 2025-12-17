@@ -8,7 +8,7 @@ router.post("/signup", Register);
 router.post("/login", Login);
 router.get("/logout", Logout);
 router.get("/:id/profile",isAuth, Getprofile);
-router.post("/profile/edit", isAuth, upload.single('profilePicture')  ,editprofile);
+router.post("/profile/edit",isAuth,upload.single("Profilepic"),editprofile);
 router.get("/suggested",isAuth, getsuggestedUsers);
 router.get("/FolloworUnfollow/:id",isAuth, followorunfollowuser);
 
