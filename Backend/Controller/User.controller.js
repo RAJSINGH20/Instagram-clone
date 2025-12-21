@@ -122,9 +122,9 @@ export const editprofile = async (req, res) => {
   try {
     console.log("edit profile entered");
 
-    const userid = req.id;
+    const userid = req.params.id;  // ✅ FIXED
     const { bio, gender } = req.body;
-    const profilePic = req.file; // ✅ use ONE name consistently
+    const profilePic = req.file;
 
     console.log(userid, bio, gender, profilePic);
 
@@ -144,6 +144,7 @@ export const editprofile = async (req, res) => {
 
     const user = await User.findById(userid);
     if (!user) {
+      console.log("user not found", user);
       return res.status(404).json({
         message: "User not found",
         success: false,
@@ -153,7 +154,6 @@ export const editprofile = async (req, res) => {
     if (bio) user.bio = bio;
     if (gender) user.gender = gender;
 
-    // ✅ check both conditions
     if (profilePic && cloudResponse) {
       user.profilepic = cloudResponse.secure_url;
     }
@@ -165,6 +165,7 @@ export const editprofile = async (req, res) => {
       success: true,
       user,
     });
+
   } catch (error) {
     console.error(error);
     return res.status(500).json({
