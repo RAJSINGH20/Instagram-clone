@@ -5,6 +5,7 @@ import dotenv from 'dotenv';
 import connectdb from './util/db.js';
 import UserRoute from './Routes/User.Routes.js';
 import User from './model/user.model.js';
+import postRoutes from './Routes/Post.Routes.js';
 
 dotenv.config();
 
@@ -29,6 +30,7 @@ app.get('/', (_, res) => {
 });
 
 app.use("/api/v1/user", UserRoute);
+app.use("/api/v1/post", postRoutes);
 "http://localhost:8000/api/v1/user/signup"
 
 app.listen(PORT, () => {

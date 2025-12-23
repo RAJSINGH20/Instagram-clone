@@ -10,10 +10,6 @@ const postschema = new mongoose.Schema({
         ref:'User',
         required:true
     },
-    title: {
-        type: String,
-        required: true,
-    },
     image: {
         type: String,
         required: true,
