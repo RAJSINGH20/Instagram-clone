@@ -1,31 +1,30 @@
 import jwt from "jsonwebtoken";
 
-const isAuth = (req, res, next) => {
+export const isAuth = async (req, res, next) => {
   try {
-    const authHeader = req.headers.authorization;
+    const token =
+      req.cookies?.token || req.headers.authorization?.split(" ")[1];
 
-    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+    if (!token) {
       return res.status(401).json({
-        message: "Authorization token missing",
+        message: "No token provided",
         success: false,
       });
     }
 
-    const token = authHeader.split(" ")[1];
-
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-    // 🔥 THIS LINE FIXES EVERYTHING
-    req.user = decoded; // decoded MUST contain id
+    // ✅ INITIALIZE req.user FIRST
+    req.user = {
+      id: decoded.id || decoded.userid, // support both
+    };
 
     next();
   } catch (error) {
     console.log("JWT ERROR:", error.message);
     return res.status(401).json({
-      message: "Invalid or expired token",
+      message: "Invalid token",
       success: false,
     });
   }
 };
-
-export default isAuth;

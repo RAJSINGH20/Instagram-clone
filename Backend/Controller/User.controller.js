@@ -198,10 +198,8 @@ export const getsuggestedUsers = async (req, res) => {
 
 export const followorunfollowuser = async (req, res) => {
   try {
-    const followkarnewala = req.user.id; // ✅ FIX 1
+    const followkarnewala = req.user.id;
     const jiskofollowkarunga = req.params.id;
-
-    console.log("Follow request from:", followkarnewala, "to:", jiskofollowkarunga);
 
     if (followkarnewala === jiskofollowkarunga) {
       return res.status(400).json({
@@ -213,17 +211,13 @@ export const followorunfollowuser = async (req, res) => {
     const user = await User.findById(followkarnewala);
     const targetUser = await User.findById(jiskofollowkarunga);
 
-    if (!user || !targetUser) {
-      return res.status(404).json({
-        message: "User not found",
-        success: false,
-      });
-    }
-
-    const isFollowing = user.following.includes(jiskofollowkarunga);
+    const isFollowing = user.following.some(
+      id => id.toString() === jiskofollowkarunga
+    );
+    console.log("user :",user)
 
     if (isFollowing) {
-      // ✅ UNFOLLOW
+      // 🔴 UNFOLLOW
       await Promise.all([
         User.findByIdAndUpdate(followkarnewala, {
           $pull: { following: jiskofollowkarunga },
@@ -233,23 +227,23 @@ export const followorunfollowuser = async (req, res) => {
         }),
       ]);
 
-      return res.status(200).json({
-        message: "Unfollowed successfully",
+      return res.json({
+        message: "Followed successfully",
         success: true,
       });
     } else {
-      // ✅ FOLLOW
+      // 🟢 FOLLOW
       await Promise.all([
         User.findByIdAndUpdate(followkarnewala, {
-          $push: { following: jiskofollowkarunga },
+          $addToSet: { following: jiskofollowkarunga },
         }),
         User.findByIdAndUpdate(jiskofollowkarunga, {
-          $push: { followers: followkarnewala },
+          $addToSet: { followers: followkarnewala },
         }),
       ]);
 
-      return res.status(200).json({
-        message: "Followed successfully",
+      return res.json({
+        message: "UnFollowed successfully",
         success: true,
       });
     }
@@ -261,3 +255,4 @@ export const followorunfollowuser = async (req, res) => {
     });
   }
 };
+

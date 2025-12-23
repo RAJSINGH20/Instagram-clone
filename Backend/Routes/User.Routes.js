@@ -1,6 +1,6 @@
 import express from "express";
 import { editprofile, followorunfollowuser, Getprofile, getsuggestedUsers, Login, Logout, Register } from "../Controller/User.controller.js";
-import isAuth from "../middlewares/isSuthmiddleware.js";
+import {isAuth} from "../middlewares/isSuthmiddleware.js";
 import upload from "../middlewares/multer.js";
 const router = express.Router();
 
