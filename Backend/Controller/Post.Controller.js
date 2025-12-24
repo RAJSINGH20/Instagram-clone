@@ -11,7 +11,7 @@ export const addpost = async (req, res) => {
         const { image } = req.file;
         const AuthorId = req.id;
 
-        console.log("FILE:", req.file);
+        console.log("FILE:", image);
         console.log("BODY:", req.body);
 
         if (!image) return res.status(400).json({ message: "Image is required", success: false })
@@ -89,7 +89,7 @@ export const getuserpost = async (req, res) => {
 }
 
 
-const likepost = async (req, res) => {
+export const likepost = async (req, res) => {
     try {
         const likekarnewalaid = req.id;
         const { postid } = req.params;
@@ -108,7 +108,7 @@ const likepost = async (req, res) => {
         console.log(error)
     }
 }
-const Dislikepost = async (req, res) => {
+export const Dislikepost = async (req, res) => {
     try {
         const likekarnewalaid = req.id;
         const { postid } = req.params;

@@ -6,10 +6,12 @@ import {
   comment,
   getcommentsofpost,
   delpost,
-  bookmarkpost
+  bookmarkpost,
+  likepost,
+  Dislikepost
 } from "../Controller/Post.Controller.js";
 
-import {isAuthenticated} from "../middlewares/isSuthmiddleware.js";
+import {isAuth} from "../middlewares/isSuthmiddleware.js";
 import upload from "../middlewares/multer.js";
 
 const router = express.Router();
@@ -19,35 +21,35 @@ const router = express.Router();
 // create post
 router.post(
   "/add",
-  isAuthenticated,
+  isAuth,
   upload.single("image"),
   addpost
 );
 
 // get all posts
-router.get("/all", isAuthenticated, getallposts);
+router.get("/all", isAuth, getallposts);
 
 // get logged-in user's posts
-router.get("/user", isAuthenticated, getuserpost);
+router.get("/user", isAuth, getuserpost);
 
 // delete post
-router.delete("/:id", isAuthenticated, delpost);
+router.delete("/:id", isAuth, delpost);
 
 /* -------- LIKES -------- */
 
-router.put("/like/:postid", isAuthenticated, likepost);
-router.put("/dislike/:postid", isAuthenticated, Dislikepost);
+router.put("/like/:postid", isAuth,likepost);
+router.put("/dislike/:postid", isAuth,Dislikepost);
 
 /* -------- COMMENTS -------- */
 
 // add comment
-router.post("/comment/:id", isAuthenticated, comment);
+router.post("/comment/:id", isAuth, comment);
 
 // get comments of a post
-router.get("/comment/:id", isAuthenticated, getcommentsofpost);
+router.get("/comment/:id", isAuth, getcommentsofpost);
 
 /* -------- BOOKMARK -------- */
 
-router.put("/bookmark/:id", isAuthenticated, bookmarkpost);
+router.put("/bookmark/:id", isAuth, bookmarkpost);
 
 export default router;

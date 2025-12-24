@@ -6,7 +6,7 @@ const postschema = new mongoose.Schema({
         default:''
     },
     author:{
-        type:mongoose.Schema.type.objectId,
+        type:mongoose.Schema.Types.ObjectId,
         ref:'User',
         required:true
     },
