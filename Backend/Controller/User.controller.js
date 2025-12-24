@@ -4,6 +4,7 @@ import User from "../model/user.model.js"
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import dataUri from "../util/Datauri.js";
+import { Post } from "../model/post.model.js";
 
 export const Register = async (req, res) => {
     try {
@@ -65,6 +66,17 @@ export const Login = async (req, res) => {
         );
         console.log("Generated Token:", token); // ✅ Debugging line
 
+        const populatedUser = await Promise.all(
+          userFound.posts.map(async (postid) => {
+            const post = await Post.findById(postid)
+
+            if(post.author.equals(userFound._id)){
+                return post;
+            }
+            return null;
+          })
+        )
+
         const user = {
             _id: userFound._id,
             username: userFound.username,
@@ -73,7 +85,7 @@ export const Login = async (req, res) => {
             bio: userFound.bio,
             followers: userFound.followers,
             following: userFound.following,
-            posts: userFound.posts
+            posts: populatedUser
         };
 
         // ✅ Set cookie and send response only ONCE

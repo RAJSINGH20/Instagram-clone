@@ -30,26 +30,26 @@ router.post(
 router.get("/all", isAuth, getallposts);
 
 // get logged-in user's posts
-router.get("/user", isAuth, getuserpost);
+router.get("/userpost/all", isAuth, getuserpost);
 
 // delete post
-router.delete("/:id", isAuth, delpost);
+router.delete("/delete/:id", isAuth, delpost);
 
 /* -------- LIKES -------- */
 
-router.put("/like/:postid", isAuth,likepost);
-router.put("/dislike/:postid", isAuth,Dislikepost);
+router.put("/:id/like", isAuth,likepost);
+router.put("/:id/dislike", isAuth,Dislikepost);
 
 /* -------- COMMENTS -------- */
 
 // add comment
-router.post("/comment/:id", isAuth, comment);
+router.post("/:id/comment", isAuth, comment);
 
 // get comments of a post
-router.get("/comment/:id", isAuth, getcommentsofpost);
+router.get("/:id/comment/all", isAuth, getcommentsofpost);
 
 /* -------- BOOKMARK -------- */
 
-router.put("/bookmark/:id", isAuth, bookmarkpost);
+router.put("/:id/bookmark", isAuth, bookmarkpost);
 
 export default router;

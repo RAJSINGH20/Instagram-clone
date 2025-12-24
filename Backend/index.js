@@ -6,6 +6,7 @@ import connectdb from './util/db.js';
 import UserRoute from './Routes/User.Routes.js';
 import User from './model/user.model.js';
 import postRoutes from './Routes/Post.Routes.js';
+import msgroute from './Routes/Msg.routes.js'
 
 dotenv.config();
 
@@ -31,9 +32,12 @@ app.get('/', (_, res) => {
 
 app.use("/api/v1/user", UserRoute);
 app.use("/api/v1/post", postRoutes);
+app.use("/api/v1/message", msgroute);
+
+
 "http://localhost:8000/api/v1/user/signup"
 
 app.listen(PORT, () => {
-    connectdb();  
+    connectdb();
     console.log(`Server listening at http://localhost:${PORT}`);
 });

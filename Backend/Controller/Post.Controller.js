@@ -2,6 +2,7 @@ import sharp from 'sharp';
 import { Post } from '../model/post.model.js';
 import { populate } from 'dotenv';
 import User from '../model/user.model.js';
+import {Comment} from '../model/comment.model.js'
 
 
 export const addpost = async (req, res) => {
@@ -143,7 +144,7 @@ export const comment = async(req,res)=>{
             return res.status(400).json({ message: "user not found", success: false })
         }
 
-        const comment = await comment.create({
+        const comment = await Comment.create({
             text,
             author: commentkarnewalaid,
             post: postID
