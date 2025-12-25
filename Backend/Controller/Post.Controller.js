@@ -3,60 +3,70 @@ import { Post } from '../model/post.model.js';
 import { populate } from 'dotenv';
 import User from '../model/user.model.js';
 import {Comment} from '../model/comment.model.js'
+import cloudinary from '../util/Cloudinary.js'
 
 
 export const addpost = async (req, res) => {
-    try {
-        const { caption } = req.body
+  try {
+    console.log("enterd in the addpost`")
+    const { caption } = req.body;
+    const image = req.file;
+    const AuthorId = req.id;
 
-        const { image } = req.file;
-        const AuthorId = req.id;
+    console.log("FILE:", image);
+    console.log("BODY:", req.body);
 
-        console.log("FILE:", image);
-        console.log("BODY:", req.body);
-
-        if (!image) return res.status(400).json({ message: "Image is required", success: false })
-
-        const optimizedImage = await sharp(image.buffer)
-            .resize({ width: 720, height: 720, fit: 'cover' })
-            .jpeg({ quality: 80 })
-            .toFormat('jpeg', { quality: 80 })
-            .toBuffer();
-
-        // buffer to data uri
-
-        const fileuri = `data: image/jpeg;base64,${optimizedImage.toString('base64')}`;
-
-        const cloudResponse = await cloudinary.uploader.upload(fileuri, {
-            folder: "postimages",
-            resource_type: "image"({
-                caption,
-                image: cloudResponse.secure_url,
-                author: AuthorId
-            })
-        });
-
-
-        const user = await User.findById(AuthorId).select("-password");
-        if (user) {
-            user.posts.push(newpost._id);
-            await user.save();
-        }
-
-        await post.populate({ path: 'author', select: '_id name profilepic' })
-        return res.status(201).json({
-            message: "Post created successfully",
-            success: true,
-            Post
-        })
-    } catch (error) {
-        console.error(error);
-        return res.status(500).json({
-            message: "Internal server error",
-            success: false,
-        });
+    if (!image) {
+      return res.status(400).json({
+        message: "Image is required",
+        success: false,
+      });
     }
-}
+
+    const optimizedImage = await sharp(image.buffer)
+      .resize({ width: 720, height: 720, fit: "cover" })
+      .jpeg({ quality: 80 })
+      .toBuffer();
+
+    const fileuri = `data:image/jpeg;base64,${optimizedImage.toString(
+      "base64"
+    )}`;
+
+    const cloudResponse = await cloudinary.uploader.upload(fileuri, {
+      folder: "postimages",
+      resource_type: "image",
+    });
+
+    const newpost = await Post.create({
+      caption,
+      image: cloudResponse.secure_url,
+      author: AuthorId,
+    });
+
+    const user = await User.findById(AuthorId);
+    if (user) {
+      user.posts.push(newpost._id);
+      await user.save();
+    }
+
+    await newpost.populate({
+      path: "author",
+      select: "_id name profilepic",
+    });
+
+    return res.status(201).json({
+      message: "Post created successfully",
+      success: true,
+      post: newpost,
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      message: "Internal server error",
+      success: false,
+    });
+  }
+};
 
 
 export const getallposts = async (req, res) => {
