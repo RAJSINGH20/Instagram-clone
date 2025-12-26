@@ -2,7 +2,9 @@ import React from 'react'
 
 const Signup = () => {
   return (
-    <div className=' bg-color grey-800'>Signup</div>
+    <div className="bg-gray-800 text-white p-4">
+      Signup
+    </div>
   )
 }
 
