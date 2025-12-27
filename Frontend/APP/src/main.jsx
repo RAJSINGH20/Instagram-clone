@@ -4,7 +4,5 @@ import './index.css' // Ensure Tailwind @import "tailwindcss" is inside this fil
 import App from './App.jsx' // Changed to default import (common practice)
 
 createRoot(document.getElementById('root')).render(
-  <StrictMode>
     <App />
-  </StrictMode>
 )
