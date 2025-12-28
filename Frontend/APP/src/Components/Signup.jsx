@@ -28,10 +28,11 @@ const Register = () => {
         withCredentials: true,
       });
       if(res.data.success){
-      toast.success("Registration successful:", res.data.message);
+        toast.success(res.data.message || "Registration successful");
       }
     } catch (error) {
       console.error("Registration error:", error);
+      toast.error(error.response?.data?.message || "Registration failed");
     }
   };
 
