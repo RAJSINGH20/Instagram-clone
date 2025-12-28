@@ -1,4 +1,6 @@
 import { useState } from "react";
+import axios from "axios";
+import { toast } from "react-hot-toast";
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -15,9 +17,22 @@ const Register = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async(e) => {
     e.preventDefault();
     console.log(formData);
+    try {
+      const res = await axios.post("http://localhost:8000/api/v1/user/signup", formData,{
+        headers: {
+          "Content-Type": "application/json",
+        },
+        withCredentials: true,
+      });
+      if(res.data.success){
+      toast.success("Registration successful:", res.data.message);
+      }
+    } catch (error) {
+      console.error("Registration error:", error);
+    }
   };
 
   return (
