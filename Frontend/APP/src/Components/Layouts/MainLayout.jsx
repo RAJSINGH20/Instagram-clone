@@ -1,10 +1,11 @@
 import React from 'react'
 import { Outlet } from 'react-router-dom'
+import Sidebar from '../Sidebar.jsx'
 
 const MainLayout = () => {
   return (
     <div>
-      Sidebar
+      <Sidebar />
         <div> <Outlet /></div>
     </div>
   )

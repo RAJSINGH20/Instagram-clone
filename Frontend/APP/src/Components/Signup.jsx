@@ -2,6 +2,7 @@ import { useState } from "react";
 import axios from "axios";
 import { toast } from "react-hot-toast";
 import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -9,7 +10,7 @@ const Register = () => {
     email: "",
     password: "",
   });
-
+  const navigate = useNavigate();
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
@@ -25,6 +26,7 @@ const Register = () => {
     e.preventDefault();
     console.log(formData);
     try {
+      navigate("/login");
       setLoading(true);
       const res = await axios.post("http://localhost:8000/api/v1/user/signup", formData, {
         headers: {
@@ -105,18 +107,20 @@ const Register = () => {
           </div>
 
           {/* Button */}
-          <button
-            type="submit"
-            className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition duration-200"
-          >
-            Register
-          </button>
+          {
+            loading ? (<div className="mt-4 text-center text-blue-600">Logging in...</div>) : (<button
+              type="submit"
+              className="w-full border-2 border-blue-600 bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 hover:border-blue-700 transition-all duration-200 ease-in-out active:scale-95"
+            >
+              Register
+            </button>
+            )}
         </form>
 
         <p className="text-sm text-center mt-4">
           Already have an account?{" "}
           <span className="text-blue-600 cursor-pointer hover:underline" >
-            
+
             <Link to="/login">Login</Link>
           </span>
         </p>

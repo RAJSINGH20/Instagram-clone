@@ -1,14 +1,15 @@
 import axios from 'axios';
 import React, { useState } from 'react'
 import toast from 'react-hot-toast';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const Login = () => {
     const [formData, setFormData] = useState({
         email: "",
         password: "",
     });
-    const [loading , Setloading] = useState(false);
+    const navigate = useNavigate();
+    const [loading, Setloading] = useState(false);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -22,6 +23,7 @@ const Login = () => {
         e.preventDefault();
         console.log(formData);
         try {
+            navigate("/");
             Setloading(true);
             const res = await axios.post("http://localhost:8000/api/v1/user/login", formData, {
                 headers: {
@@ -48,7 +50,7 @@ const Login = () => {
                 </h2>
 
                 <form onSubmit={handleSubmit} className="space-y-4">
-                    
+
 
 
                     {/* Email */}
@@ -84,16 +86,16 @@ const Login = () => {
                     </div>
 
                     {/* Button */}
-                    <button
-                        type="submit"
-                        className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition duration-200"
-                    >
-                        Login
-                    </button>
+                    {
+                        loading ? (<div className="mt-4 text-center text-blue-600">Logging in...</div>) : (<button
+                            type="submit"
+                            className="w-full border-2 border-blue-600 bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 hover:border-blue-700 transition-all duration-200 ease-in-out active:scale-95"
+                        >
+                            Login
+                        </button>
+                        )}
                 </form>
-                {
-                    loading && <p className="text-center mt-4 text-blue-600">Logging in...</p>
-                }
+
 
                 <p className="text-sm text-center mt-4">
                     dont have an account?{" "}
