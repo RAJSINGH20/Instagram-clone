@@ -1,6 +1,7 @@
 import { useState } from "react";
 import axios from "axios";
 import { toast } from "react-hot-toast";
+import { Link } from "react-router-dom";
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -16,23 +17,34 @@ const Register = () => {
       [name]: value,
     }));
   };
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = async(e) => {
+
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     console.log(formData);
     try {
-      const res = await axios.post("http://localhost:8000/api/v1/user/signup", formData,{
+      setLoading(true);
+      const res = await axios.post("http://localhost:8000/api/v1/user/signup", formData, {
         headers: {
           "Content-Type": "application/json",
         },
         withCredentials: true,
       });
-      if(res.data.success){
+      if (res.data.success) {
         toast.success(res.data.message || "Registration successful");
       }
     } catch (error) {
       console.error("Registration error:", error);
       toast.error(error.response?.data?.message || "Registration failed");
+      setFormData({
+        username: "",
+        email: "",
+        password: "",
+      })
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -103,8 +115,9 @@ const Register = () => {
 
         <p className="text-sm text-center mt-4">
           Already have an account?{" "}
-          <span className="text-blue-600 cursor-pointer hover:underline">
-            Login
+          <span className="text-blue-600 cursor-pointer hover:underline" >
+            
+            <Link to="/login">Login</Link>
           </span>
         </p>
       </div>

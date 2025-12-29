@@ -1,12 +1,14 @@
 import axios from 'axios';
 import React, { useState } from 'react'
 import toast from 'react-hot-toast';
+import { Link } from 'react-router-dom';
 
 const Login = () => {
     const [formData, setFormData] = useState({
         email: "",
         password: "",
     });
+    const [loading , Setloading] = useState(false);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -20,18 +22,22 @@ const Login = () => {
         e.preventDefault();
         console.log(formData);
         try {
+            Setloading(true);
             const res = await axios.post("http://localhost:8000/api/v1/user/login", formData, {
                 headers: {
                     "Content-Type": "application/json",
                 },
                 withCredentials: true,
             });
+            console.log(res);
             if (res.data.success) {
                 toast.success(res.data.message || "Login successful");
             }
         } catch (error) {
             console.error("Login error:", error);
             toast.error(error.response?.data?.message || "Login failed");
+        } finally {
+            Setloading(false);
         }
     };
     return (
@@ -82,14 +88,17 @@ const Login = () => {
                         type="submit"
                         className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition duration-200"
                     >
-                        Register
+                        Login
                     </button>
                 </form>
+                {
+                    loading && <p className="text-center mt-4 text-blue-600">Logging in...</p>
+                }
 
                 <p className="text-sm text-center mt-4">
                     dont have an account?{" "}
                     <span className="text-blue-600 cursor-pointer hover:underline">
-                        Register
+                        <Link to="/signup">Signup</Link>
                     </span>
                 </p>
             </div>
