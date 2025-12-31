@@ -2,13 +2,15 @@ import { useState } from "react";
 import axios from "axios";
 
 const AddPost = () => {
-  const [caption, setCaption] = useState("");
+  const [caption, setCaption] = useState(" my caption");
   const [image, setImage] = useState(null);
   const [preview, setPreview] = useState(null);
   const [loading, setLoading] = useState(false);
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
+    if (!file) return;
+
     setImage(file);
     setPreview(URL.createObjectURL(file));
   };
@@ -24,27 +26,24 @@ const AddPost = () => {
     const formData = new FormData();
     formData.append("caption", caption);
     formData.append("image", image);
+    console.log('token', localStorage.getItem("token"))
 
     try {
       setLoading(true);
-      const res = await axios.post(
+
+      await axios.post(
         "http://localhost:8000/api/v1/post/add",
         formData,
         {
-          headers: {
-            "Content-Type": "multipart/form-data",
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
-          },
+          withCredentials: true, // cookie automatically sent
         }
       );
 
-      alert("Post created successfully");
-      console.log(res)
       setCaption("");
       setImage(null);
       setPreview(null);
+      alert("Posted!");
     } catch (error) {
-      console.error(error);
       alert(error.response?.data?.message || "Something went wrong");
     } finally {
       setLoading(false);
@@ -52,49 +51,58 @@ const AddPost = () => {
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-100">
-      <form
-        onSubmit={handleSubmit}
-        className="bg-white p-6 rounded-lg shadow-md w-full max-w-md"
-      >
-        <h2 className="text-2xl font-semibold text-center mb-4">
-          Add New Post
-        </h2>
+    <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <div className="bg-white w-full max-w-md border rounded-lg shadow-sm">
+
+        {/* Header */}
+        <div className="border-b px-4 py-3 text-center font-semibold">
+          Create new post
+        </div>
 
         {/* Image Preview */}
-        {preview && (
-          <img
-            src={preview}
-            alt="preview"
-            className="w-full h-64 object-cover rounded mb-4"
-          />
-        )}
+        <div className="flex items-center justify-center bg-gray-100 h-80">
+          {preview ? (
+            <img
+              src={preview}
+              alt="preview"
+              className="h-full w-full object-cover"
+            />
+          ) : (
+            <label className="flex flex-col items-center text-gray-500 cursor-pointer">
+              <span className="text-sm">Drag photos here</span>
+              <span className="text-xs mt-1 text-blue-500 font-semibold">
+                Select from computer
+              </span>
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleImageChange}
+                className="hidden"
+              />
+            </label>
+          )}
+        </div>
 
         {/* Caption */}
-        <textarea
-          placeholder="Write a caption..."
-          className="w-full border rounded p-2 mb-4 focus:outline-none focus:ring"
-          value={caption}
-          onChange={(e) => setCaption(e.target.value)}
-        />
+        <div className="p-4 border-t">
+          <textarea
+            placeholder="Write a caption..."
+            value={caption}
+            onChange={(e) => setCaption(e.target.value)}
+            className="w-full resize-none text-sm outline-none"
+            rows={3}
+          />
+        </div>
 
-        {/* Image Input */}
-        <input
-          type="file"
-          accept="image/*"
-          onChange={handleImageChange}
-          className="mb-4"
-        />
-
-        {/* Submit */}
+        {/* Post Button */}
         <button
-          type="submit"
+          onClick={handleSubmit}
           disabled={loading}
-          className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600 transition"
+          className="w-full border-t py-3 text-blue-500 font-semibold hover:bg-gray-50 disabled:opacity-50"
         >
-          {loading ? "Posting..." : "Post"}
+          {loading ? "Sharing..." : "Share"}
         </button>
-      </form>
+      </div>
     </div>
   );
 };

@@ -11,7 +11,7 @@ export const addpost = async (req, res) => {
     console.log("enterd in the addpost`")
     const { caption } = req.body;
     const image = req.file;
-    const AuthorId = req.id;
+    const AuthorId = req.user.id;
 
     console.log("FILE:", image);
     console.log("BODY:", req.body);
@@ -42,6 +42,7 @@ export const addpost = async (req, res) => {
       image: cloudResponse.secure_url,
       author: AuthorId,
     });
+    console.log(AuthorId)
 
     const user = await User.findById(AuthorId);
     if (user) {

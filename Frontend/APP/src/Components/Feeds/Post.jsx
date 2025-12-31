@@ -1,19 +1,24 @@
-import axios from 'axios'
-import React, { useEffect, useState } from 'react'
+import axios from "axios";
+import React, { useEffect, useState } from "react";
+import { Heart, MessageCircle, Send } from "lucide-react";
 
 const Post = () => {
-  const [posts, setPosts] = useState([])
+  const [posts, setPosts] = useState([]);
+  const [likedPosts, setLikedPosts] = useState({});
 
   useEffect(() => {
     axios
-      .get('http://localhost:8000/api/v1/post/all')
-      .then((res) => {
-        setPosts(res.data)
-      })
-      .catch((err) => {
-        console.error(err)
-      })
-  }, [])
+      .get("http://localhost:8000/api/v1/post/all", {withCredentials: true})
+      .then((res) => setPosts(res.data.posts))
+      .catch((err) => console.error(err));
+  }, []);
+
+  const toggleLike = (postId) => {
+    setLikedPosts((prev) => ({
+      ...prev,
+      [postId]: !prev[postId],
+    }));
+  };
 
   return (
     <div className="flex justify-center mt-6">
@@ -28,25 +33,52 @@ const Post = () => {
             No posts found
           </p>
         ) : (
-          posts.map((post, index) => (
+          posts.map((post) => (
             <div
-              key={index}
+              key={post._id}
               className="bg-white border rounded-lg shadow-sm"
             >
-              {/* Image */}
+              {/* 🔹 Header (User Profile) */}
+              <div className="flex items-center gap-3 px-4 py-3">
+                <img
+                  src={post.author?.profilePic || "/avatar.png"}
+                  alt="profile"
+                  className="w-8 h-8 rounded-full object-cover"
+                />
+                <span className="font-semibold text-sm">
+                  {post.author?.username}
+                </span>
+              </div>
+
+              {/* 🔹 Image */}
               {post.image && (
                 <img
                   src={post.image}
                   alt="post"
-                  className="w-full h-80 object-cover rounded-t-lg"
+                  className="w-full h-80 object-cover"
                 />
               )}
 
-              {/* Content */}
-              <div className="p-4">
-                <p className="text-gray-800">
-                  {post.caption}
-                </p>
+              {/* 🔹 Actions */}
+              <div className="flex items-center gap-4 px-4 py-3">
+                <Heart
+                  onClick={() => toggleLike(post._id)}
+                  className={`cursor-pointer ${
+                    likedPosts[post._id]
+                      ? "fill-red-500 text-red-500"
+                      : "text-gray-700"
+                  }`}
+                />
+                <MessageCircle className="cursor-pointer text-gray-700" />
+                <Send className="cursor-pointer text-gray-700" />
+              </div>
+
+              {/* 🔹 Caption */}
+              <div className="px-4 pb-4 text-sm">
+                <span className="font-semibold mr-2">
+                  {post.author?.username}
+                </span>
+                {post.caption}
               </div>
             </div>
           ))
@@ -54,7 +86,7 @@ const Post = () => {
 
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default Post
+export default Post;
