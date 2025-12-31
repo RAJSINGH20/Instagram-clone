@@ -3,7 +3,7 @@ import MainLayout from './Layouts/MainLayout'
 
 const Home = () => {
   return (
-    <><MainLayout /> HOME</>
+    <><MainLayout /></>
   )
 }
 

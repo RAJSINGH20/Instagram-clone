@@ -40,9 +40,14 @@ const Sidebar = () => {
             toast.error("Logout failed", error);
         }
     }
+    const AddPostHandaler = async()=>{
+        navigate("/AddPost")
+    }
     const sidebarHandaler = (text) => {
         if (text === "Logout") {
             logoutHandaler();
+        }else if (text === "Create"){
+            AddPostHandaler();
         }
     }
     return (
