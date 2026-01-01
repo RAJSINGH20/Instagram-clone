@@ -5,6 +5,7 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import dataUri from "../util/Datauri.js";
 import { Post } from "../model/post.model.js";
+import mongoose from "mongoose";
 
 export const Register = async (req, res) => {
     try {
@@ -115,20 +116,41 @@ export const Logout = async (req, res) => {
     }
 }
 export const Getprofile = async (req, res) => {
-    try {
-        const userid = req.params.id;
-        const user = await User.findById(userid).select("-password");
-        if (!user) {
-            return res.status(404).json({ message: "User not found", success: false });
-        }
-        return res.status(200).json({"user": user, success: true });
-    } catch (error) {
-        console.log(error)
-        res.status(500).json({ message: "Internal server error", success: false })
+  try {
+    const { id } = req.params;
+
+    console.log("userid:", id);
+
+    // ✅ Validate ObjectId
+    if (!id || !mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({
+        message: "Invalid user id",
+        success: false,
+      });
     }
 
+    const user = await User.findById(id).select("-password");
 
-}
+    if (!user) {
+      return res.status(404).json({
+        message: "User not found",
+        success: false,
+      });
+    }
+
+    return res.status(200).json({
+      user,
+      success: true,
+    });
+
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      message: "Internal server error",
+      success: false,
+    });
+  }
+};
 
 export const editprofile = async (req, res) => {
   try {

@@ -148,8 +148,8 @@ export const comment = async(req,res)=>{
         const postID = req.params.id;
 
         const commentkarnewalaid = req.id;
-        const { commenttext } = req.body;
-        const post = await Post.findById(postId);
+        const { text } = req.body;
+        const post = await Post.findById(postID);
 
         if(!post){
             return res.status(400).json({ message: "user not found", success: false })

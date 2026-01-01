@@ -16,8 +16,8 @@ export const isAuth = async (req, res, next) => {
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-    // ✅ INITIALIZE req.user FIRST
-    req.user = {
+    // ✅ INITIALIZE req.User FIRST
+    req.User = {
       id: decoded.id || decoded.userid, // support both
     };
 
