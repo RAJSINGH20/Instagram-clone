@@ -117,15 +117,13 @@ export const Logout = async (req, res) => {
 }
 export const Getprofile = async (req, res) => {
   try {
-    const { id } = req.params;
+    // ✅ Matches the key set in the middleware
+    const id = req.id; 
 
-    console.log("userid:", id);
-
-    // ✅ Validate ObjectId
-    if (!id || !mongoose.Types.ObjectId.isValid(id)) {
-      return res.status(400).json({
-        message: "Invalid user id",
+    if (!id) {
+      return res.status(401).json({
         success: false,
+        message: "Unauthorized: No user ID found in request",
       });
     }
 
@@ -133,24 +131,25 @@ export const Getprofile = async (req, res) => {
 
     if (!user) {
       return res.status(404).json({
-        message: "User not found",
         success: false,
+        message: "User not found",
       });
     }
+    console.log(user)
 
     return res.status(200).json({
-      user,
       success: true,
+      user,
     });
-
   } catch (error) {
-    console.error(error);
+    console.error("GetProfile Error:", error);
     return res.status(500).json({
-      message: "Internal server error",
       success: false,
+      message: "Internal server error",
     });
   }
 };
+
 
 export const editprofile = async (req, res) => {
   try {
