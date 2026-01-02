@@ -4,11 +4,12 @@ import Home from "./Components/Home";
 import MainLayout from "./Components/Layouts/MainLayout";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import AddPost from "./Components/Feeds/AddPost";
+import Message from "./Components/message/Message";
 
 const browserRouter = createBrowserRouter([
   {
     path: "/",
-  
+
     element: <MainLayout />,
     children: [
       {
@@ -26,8 +27,12 @@ const browserRouter = createBrowserRouter([
     element: <Signup />,
   },
   {
-    path:"/AddPost",
-    element:<AddPost/>
+    path: "/AddPost",
+    element: <AddPost />
+  },
+  {
+    path: "/message",
+    element: <Message />
   }
 ]);
 
